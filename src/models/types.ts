@@ -11,7 +11,7 @@ export interface User {
 export interface Folder {
     id: number;
     name: string;
-    created_at: string; // ISO datetime string
+    createdAt: string; // ISO datetime string
 }
 
 //Python Note model
@@ -19,9 +19,9 @@ export interface Note {
     id: number;
     title: string;
     content: string;
-    is_favorite: boolean;
-    folder_id: number | null;
-    updated_at: string; // ISO datetime string
+    isFavorite: boolean;
+    folderId: number | null;
+    updatedAt: string; // ISO datetime string
 }
 
 export interface Profile {
