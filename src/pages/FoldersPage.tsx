@@ -26,7 +26,7 @@ export default function FoldersPage() {
         try {
             const data = await apiFetch<Folder[]>('/folders');
             const arr = Array.isArray(data) ? data : (data && Array.isArray((data as any).folders) ? (data as any).folders : []);
-            setFolders(arr.map((f: any) => ({id: f.id, name: f.name, createdAt: f.createdAt ?? f.created_at})));
+            setFolders(arr.map((f: any) => ({id: f.id, name: f.name, createdAt: f.createdAt ?? f.createdAt})));
         } catch (e) {
             setError(e instanceof Error ? e.message : 'Failed to load folders');
         } finally {
@@ -183,7 +183,7 @@ export default function FoldersPage() {
                                                 {folder.name}
                                             </h3>
                                             <p className="text-xs text-text-secondary mt-2">
-                                                Created {new Date(folder.created_at).toLocaleDateString('en-US', {
+                                                Created {new Date(folder.createdAt).toLocaleDateString('en-US', {
                                                 month: 'short',
                                                 day: 'numeric',
                                                 year: 'numeric',

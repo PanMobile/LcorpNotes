@@ -70,7 +70,7 @@ public class AuthController {
         String token = jwtUtil.generateToken(user.getId());
 
         Map<String, Object> response = new HashMap<>();
-        response.put("access_token", token);
+        response.put("accessToken", token);
 
         Map<String, Object> userInfo = new HashMap<>();
         userInfo.put("id", user.getId());

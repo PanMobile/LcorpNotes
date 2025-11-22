@@ -30,12 +30,12 @@ export default function AuthPage() {
                     body: JSON.stringify({email, name, password})
                 });
             }
-            const res = await apiFetch<{ access_token: string; user: { id: number; email: string; name: string } }>(
+            const res = await apiFetch<{ accessToken: string; user: { id: number; email: string; name: string } }>(
                 '/auth/login',
                 {method: 'POST', body: JSON.stringify({email, password})}
             );
 
-            login(res.access_token, res.user);
+            login(res.accessToken, res.user);
             navigate('/folders');
         } catch (err) {
             setError(err instanceof Error ? err.message : 'An error occurred');

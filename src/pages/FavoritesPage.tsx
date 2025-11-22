@@ -14,7 +14,7 @@ export default function FavoritesPage() {
 
         try {
             const allNotes = await apiFetch<Note[]>('/notes');
-            setNotes(allNotes.filter((note) => note.is_favorite));
+            setNotes(allNotes.filter((note) => note.isFavorite));
         } catch (error) {
             setError(error instanceof Error ? error.message : 'Failed to load notes');
         } finally {
@@ -112,7 +112,7 @@ export default function FavoritesPage() {
                                     </p>
                                     <div className="mt-4 pt-4 border-t border-border">
                                         <p className="text-xs text-white">
-                                            Updated {new Date(note.updated_at).toLocaleDateString('en-US', {
+                                            Updated {new Date(note.updatedAt).toLocaleDateString('en-US', {
                                             month: 'short',
                                             day: 'numeric',
                                             year: 'numeric',
@@ -124,7 +124,7 @@ export default function FavoritesPage() {
                                     className="bg-primary/50 px-6 py-3 border-t border-border">
                                     <div className="flex items-center justify-between">
                                         <span className="text-xs font-medium text-accent">
-                                            {note.folder_id ? `Folder #${note.folder_id}` : 'No folder'}
+                                            {note.folderId ? `Folder #${note.folderId}` : 'No folder'}
                                         </span>
                                         <button className="text-xs text-accent hover:text-blue-500 font-medium">
                                             View →
