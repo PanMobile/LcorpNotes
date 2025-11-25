@@ -13,12 +13,12 @@ public class NoteResponse {
     private String title;
     private String content;
 
-    @JsonProperty("is_favorite")
+    @JsonProperty("isFavorite")
     private Boolean isFavorite;
 
-    @JsonProperty("folder_id")
+    @JsonProperty("folderId")
     private Long folderId;
 
-    @JsonProperty("updated_at")
+    @JsonProperty("updatedAt")
     private LocalDateTime updatedAt;
 }

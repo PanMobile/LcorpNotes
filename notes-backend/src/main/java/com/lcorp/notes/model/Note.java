@@ -26,22 +26,22 @@ public class Note {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content = "";
 
-    @Column(name = "is_favorite", nullable = false)
+    @Column(name = "isFavorite", nullable = false)
     private Boolean isFavorite = false;
 
     @CreationTimestamp
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(name = "createdAt", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(name = "updated_at", nullable = false)
+    @Column(name = "updatedAt", nullable = false)
     private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner_id", nullable = false)
+    @JoinColumn(name = "ownerId", nullable = false)
     private User owner;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "folder_id")
+    @JoinColumn(name = "folderId")
     private Folder folder;
 }
