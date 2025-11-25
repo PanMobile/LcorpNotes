@@ -1,0 +1,42 @@
+package com.lcorp.notes.config;
+
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+
+@Configuration
+public class FirebaseConfig {
+
+    @Value("${firebase.config.path:#{null}}")
+    private String firebaseConfigPath;
+
+    @Bean
+    public FirebaseApp initializeFirebase() throws IOException {
+        if (FirebaseApp.getApps().isEmpty()) {
+            FirebaseOptions options;
+
+            if (firebaseConfigPath != null && !firebaseConfigPath.isEmpty()) {
+                // Use service account file
+                FileInputStream serviceAccount = new FileInputStream(firebaseConfigPath);
+                options = FirebaseOptions.builder()
+                        .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                        .build();
+            } else {
+                // Use default credentials (for development without service account)
+                options = FirebaseOptions.builder()
+                        .setCredentials(GoogleCredentials.getApplicationDefault())
+                        .build();
+            }
+
+            return FirebaseApp.initializeApp(options);
+        }
+
+        return FirebaseApp.getInstance();
+    }
+}

@@ -94,7 +94,7 @@ export default function FoldersPage() {
                 <div className="flex items-center justify-center min-h-[60vh]">
                     <div className="flex flex-col items-center gap-3">
                         <Spinner size="lg"/>
-                        <p className="text-text-secondary">Loading folders...</p>
+                        <p className="text-gray-400">Loading folders...</p>
                     </div>
                 </div>
             </Layout>
@@ -104,68 +104,81 @@ export default function FoldersPage() {
     return (
         <Layout>
             <div className="max-w-7xl mx-auto">
+                {/* Header Section */}
                 <div className="mb-8">
-                    <h2 className="text-3xl font-bold text-text-primary text-white">My Folders</h2>
-                    <p className="mt-2 text-text-secondary text-white">Organize your notes into folders</p>
+                    <h2 className="text-4xl font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                        My Folders
+                    </h2>
+                    <p className="mt-3 text-lg text-gray-300">Organize your notes into beautiful folders</p>
                 </div>
 
-                <form onSubmit={create} className="bg-secondary rounded-lg shadow-sm p-6 mb-8 border border-white">
+                {/* Create Folder Form */}
+                <form onSubmit={create} className="bg-gradient-to-br from-indigo-900/40 to-purple-900/40 backdrop-blur-sm rounded-2xl shadow-xl p-6 mb-8 border border-indigo-500/30">
                     <div className="flex gap-4">
                         <div className="flex-1">
                             <Input
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
-                                placeholder="New folder name"
+                                placeholder="Enter folder name..."
                                 required
+                                className="bg-gray-800/50 border-indigo-500/50 text-white placeholder-gray-400 focus:border-indigo-400 focus:ring-indigo-400/50"
                             />
                         </div>
-                        <Button type="submit" variant="primary" className="bg-amber-500">
-                            <svg className="w-5 h-5 mr-2 " fill="currentColor" viewBox="0 0 24 24"
-                                 stroke="currentColor">
+                        <Button
+                            type="submit"
+                            variant="primary"
+                            className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-semibold px-6 shadow-lg shadow-indigo-500/30 transition-all duration-200 hover:shadow-xl hover:shadow-indigo-500/40 flex items-center gap-2"
+                        >
+                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4"/>
                             </svg>
-                            Create
+                            Create Folder
                         </Button>
                     </div>
                 </form>
 
+                {/* Error Message */}
                 {error && (
-                    <div className="mb-6 p-4 bg-danger/10 border border-danger/20 rounded-lg">
-                        <p className="text-danger text-sm">{error}</p>
+                    <div className="mb-6 p-4 bg-red-900/40 border border-red-500/50 rounded-xl backdrop-blur-sm">
+                        <p className="text-red-300 text-sm font-medium">{error}</p>
                     </div>
                 )}
 
+                {/* Empty State */}
                 {folders.length === 0 ? (
-                    <div className="bg-secondary rounded-lg shadow-sm p-12 text-center border border-border ">
-                        <div className="flex justify-center mb-4">
-                            <svg className="w-16 h-16 text-text-secondary" fill="none" viewBox="0 0 24 24"
-                                 stroke="currentColor">
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={1.5}
-                                    d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"
-                                />
-                            </svg>
+                    <div className="bg-gradient-to-br from-gray-800/40 to-gray-900/40 backdrop-blur-sm rounded-2xl shadow-xl p-16 text-center border border-gray-700/50">
+                        <div className="flex justify-center mb-6">
+                            <div className="p-6 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 rounded-full">
+                                <svg className="w-20 h-20 text-indigo-400" fill="none" viewBox="0 0 24 24"
+                                     stroke="currentColor">
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={1.5}
+                                        d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"
+                                    />
+                                </svg>
+                            </div>
                         </div>
-                        <h3 className="text-lg font-medium text-text-primary mb-2">No folders yet</h3>
-                        <p className="text-text-secondary">Create your first folder above.</p>
+                        <h3 className="text-2xl font-bold text-white mb-3">No folders yet</h3>
+                        <p className="text-gray-400 text-lg">Create your first folder to get started organizing your notes</p>
                     </div>
                 ) : (
+                    /* Folders Grid */
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                         {folders.map((folder) => (
                             <div
                                 key={folder.id}
-                                className="bg-secondary rounded-lg shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden border border-border group"
+                                className="group bg-gradient-to-br from-gray-800/60 to-gray-900/60 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-700/50 hover:border-indigo-500/50 transform hover:-translate-y-1"
                             >
                                 <Link
                                     to={`/folders/${folder.id}`}
-                                    className="block p-6 hover:bg-border/50 transition-colors"
+                                    className="block p-6 hover:bg-gradient-to-br hover:from-indigo-900/20 hover:to-purple-900/20 transition-all duration-200"
                                 >
                                     <div className="flex items-start gap-4">
-                                        <div className="flex-shrink-0">
+                                        <div className="flex-shrink-0 p-3 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 rounded-xl group-hover:from-indigo-500/30 group-hover:to-purple-500/30 transition-all duration-200">
                                             <svg
-                                                className="w-10 h-10 text-accent group-hover:text-blue-500 transition-colors"
+                                                className="w-8 h-8 text-indigo-400 group-hover:text-indigo-300 transition-colors"
                                                 fill="none"
                                                 viewBox="0 0 24 24"
                                                 stroke="currentColor"
@@ -179,11 +192,11 @@ export default function FoldersPage() {
                                             </svg>
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <h3 className="text-lg font-semibold text-text-primary break-words group-hover:text-accent transition-colors">
+                                            <h3 className="text-lg font-bold text-white break-words group-hover:text-indigo-300 transition-colors mb-2">
                                                 {folder.name}
                                             </h3>
-                                            <p className="text-xs text-text-secondary mt-2">
-                                                Created {new Date(folder.createdAt).toLocaleDateString('en-US', {
+                                            <p className="text-xs text-gray-400 group-hover:text-gray-300 transition-colors">
+                                                Created {new Date(folder.createdAt).toLocaleDateString('en-GB', {
                                                 month: 'short',
                                                 day: 'numeric',
                                                 year: 'numeric',
@@ -192,11 +205,10 @@ export default function FoldersPage() {
                                         </div>
                                     </div>
                                 </Link>
-                                <div
-                                    className="bg-primary/50 px-4 py-3 flex items-center justify-end gap-2 border-t border-border">
+                                <div className="bg-gray-900/40 px-4 py-3 flex items-center justify-end gap-2 border-t border-gray-700/50">
                                     <button
                                         onClick={() => openEditModal(folder)}
-                                        className="p-2 text-text-secondary hover:text-accent rounded-lg transition-colors"
+                                        className="p-2 text-gray-400 hover:text-indigo-400 hover:bg-indigo-500/10 rounded-lg transition-all duration-200"
                                         title="Edit folder"
                                     >
                                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -206,7 +218,7 @@ export default function FoldersPage() {
                                     </button>
                                     <button
                                         onClick={() => remove(folder.id)}
-                                        className="p-2 text-text-secondary hover:text-danger rounded-lg transition-colors"
+                                        className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all duration-200"
                                         title="Delete folder"
                                     >
                                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -221,6 +233,7 @@ export default function FoldersPage() {
                 )}
             </div>
 
+            {/* Edit Modal */}
             <Modal isOpen={isModalOpen} onClose={closeEditModal} title="Edit Folder">
                 <form onSubmit={saveEdit} className="space-y-4">
                     <Input

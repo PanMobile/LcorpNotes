@@ -7,6 +7,10 @@ import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import Modal from '../components/ui/Modal';
 import Spinner from '../components/ui/Spinner';
+import {AddNotePlusLogo} from "../components/logos/AddNotePlusLogo.tsx";
+import {BackToFoldersArrowLogo} from "../components/logos/BackToFoldersArrowLogo.tsx";
+import {FolderNoteLogo} from "../components/logos/FolderNoteLogo.tsx";
+import {UpdatedTimeLogo} from "../components/logos/UpdatedTimeLogo.tsx";
 
 export default function FolderDetailPage() {
     const {id} = useParams<{ id: string }>();
@@ -30,8 +34,10 @@ export default function FolderDetailPage() {
         try {
             const data = await apiFetch<Note[]>(`/notes?folderId=${folderId}`);
             setNotes(data);
-        } catch (e) {
-            setError(e instanceof Error ? e.message : 'Failed to load notes');
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            //@ts-expect-error
+        } catch (error: Error) {
+            setError(error.message);
         } finally {
             setLoading(false);
         }
@@ -46,13 +52,15 @@ export default function FolderDetailPage() {
         try {
             await apiFetch('/notes', {
                 method: 'POST',
-                body: JSON.stringify({title, content, folder_id: folderId}),
+                body: JSON.stringify({title, content, folderId: folderId}),
             });
             setTitle('');
             setContent('');
             await load();
-        } catch (error) {
-            setError(error instanceof Error ? error.message : 'Failed to create note');
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            //@ts-expect-error
+        } catch (error: Error) {
+            setError(error.message);
         }
     };
 
@@ -81,8 +89,10 @@ export default function FolderDetailPage() {
             });
             closeEditModal();
             await load();
-        } catch (e) {
-            setError(e instanceof Error ? e.message : 'Failed to update note');
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            //@ts-expect-error
+        } catch (error: Error) {
+            setError(error.message);
         }
     };
 
@@ -91,8 +101,10 @@ export default function FolderDetailPage() {
         try {
             await apiFetch(`/notes/${id}`, {method: 'DELETE'});
             await load();
-        } catch (e) {
-            setError(e instanceof Error ? e.message : 'Failed to delete note');
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            //@ts-expect-error
+        } catch (error: Error) {
+            setError(error.message);
         }
     };
 
@@ -100,8 +112,10 @@ export default function FolderDetailPage() {
         try {
             await apiFetch(`/notes/${note.id}/favorite`, {method: 'POST'});
             await load();
-        } catch (e) {
-            setError(e instanceof Error ? e.message : 'Failed to toggle favorite');
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            //@ts-expect-error
+        } catch (error: Error) {
+            setError(error.message);
         }
     };
 
@@ -111,7 +125,7 @@ export default function FolderDetailPage() {
                 <div className="flex items-center justify-center min-h-[60vh]">
                     <div className="flex flex-col items-center gap-3">
                         <Spinner size="lg"/>
-                        <p className="text-text-secondary">Loading notes...</p>
+                        <p className="text-gray-400">Loading notes...</p>
                     </div>
                 </div>
             </Layout>
@@ -121,100 +135,109 @@ export default function FolderDetailPage() {
     return (
         <Layout>
             <div className="max-w-7xl mx-auto">
+                {/* Back Button */}
                 <Link
                     to="/folders"
-                    className="inline-flex items-center gap-2 text-accent hover:text-blue-500 mb-6 font-medium transition"
-                >
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7"/>
-                    </svg>
+                    className="inline-flex items-center gap-2 text-indigo-400 hover:text-indigo-300 mb-6 font-medium transition-colors group">
+                    <BackToFoldersArrowLogo/>
                     Back to Folders
                 </Link>
 
+                {/* Header Section */}
                 <div className="mb-8">
-                    <h2 className="text-3xl font-bold text-text-primary">Folder Notes</h2>
-                    <p className="mt-2 text-text-secondary">Manage your notes in this folder</p>
+                    <h2 className="text-4xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
+                        Folder Notes
+                    </h2>
+                    <p className="mt-3 text-lg text-gray-300">Manage and organize your notes</p>
                 </div>
 
-                <form onSubmit={create} className="bg-secondary rounded-lg shadow-sm p-6 mb-8 border border-border">
+                {/* Create Note Form */}
+                <form onSubmit={create}
+                      className="bg-gradient-to-br from-gray-800/60 to-gray-900/60 backdrop-blur-sm rounded-2xl shadow-xl p-6 mb-8 border border-gray-700/50">
                     <div className="space-y-4">
                         <Input
                             label="Note Title"
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
-                            placeholder="Enter note title"
+                            placeholder="Enter note title..."
                             required
+                            className="bg-gray-900/60 border-gray-600/50 text-white placeholder-gray-500"
                         />
                         <div>
-                            <label className="block text-sm font-medium text-text-secondary mb-1">Content</label>
+                            <label className="block text-sm font-medium text-gray-300 mb-2">Content</label>
                             <textarea
                                 value={content}
                                 onChange={(e) => setContent(e.target.value)}
-                                placeholder="Enter note content"
+                                placeholder="Write your note content here..."
                                 rows={3}
-                                className="w-full px-4 py-3 bg-primary border border-border rounded-lg focus:ring-2 focus:ring-accent focus:border-accent outline-none transition resize-none text-text-primary"
+                                className="w-full px-4 py-3 bg-gray-900/60 border border-gray-600/50 rounded-xl focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 outline-none transition resize-none text-white placeholder-gray-500"
                             />
                         </div>
-                        <Button type="submit" variant="primary">
+                        <Button
+                            type="submit"
+                            variant="primary"
+                            className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold shadow-lg shadow-cyan-500/30">
+                            <AddNotePlusLogo/>
                             Add Note
                         </Button>
                     </div>
                 </form>
 
+                {/* Error Message */}
                 {error && (
-                    <div className="mb-6 p-4 bg-danger/10 border border-danger/20 rounded-lg">
-                        <p className="text-danger text-sm">{error}</p>
+                    <div className="mb-6 p-4 bg-red-900/40 border border-red-500/50 rounded-xl backdrop-blur-sm">
+                        <p className="text-red-300 text-sm font-medium">{error}</p>
                     </div>
                 )}
 
+                {/* Empty State */}
                 {notes.length === 0 ? (
-                    <div className="bg-secondary rounded-lg shadow-sm p-12 text-center border border-border">
-                        <div className="flex justify-center mb-4">
-                            <svg className="w-16 h-16 text-text-secondary" fill="none" viewBox="0 0 24 24"
-                                 stroke="currentColor">
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={1.5}
-                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                                />
-                            </svg>
+                    <div
+                        className="bg-gradient-to-br from-gray-800/40 to-gray-900/40 backdrop-blur-sm rounded-2xl shadow-xl p-16 text-center border border-gray-700/50">
+                        <div className="flex justify-center mb-6">
+                            <div className="p-6 bg-gradient-to-br from-cyan-500/20 to-blue-500/20 rounded-full">
+                                <FolderNoteLogo/>
+                            </div>
                         </div>
-                        <h3 className="text-lg font-medium text-text-primary mb-2">No notes yet</h3>
-                        <p className="text-text-secondary">Create your first note above.</p>
+                        <h3 className="text-2xl font-bold text-white mb-3">No notes yet</h3>
+                        <p className="text-gray-400 text-lg">Create your first note to get started</p>
                     </div>
                 ) : (
+                    /* Notes Grid */
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {notes.map((note) => (
                             <div
                                 key={note.id}
-                                className="bg-secondary rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden border border-border"
+                                className="group bg-gradient-to-br from-gray-800/60 to-gray-900/60 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-700/50 hover:border-cyan-500/50 transform hover:-translate-y-1"
                             >
                                 <div className="p-6">
-                                    <h3 className="text-lg font-semibold text-text-primary mb-2 break-words">
+                                    <h3 className="text-lg font-bold text-white mb-3 break-words group-hover:text-cyan-300 transition-colors">
                                         {note.title}
                                     </h3>
-                                    <p className="text-text-secondary text-sm whitespace-pre-wrap break-words line-clamp-3">
+                                    <p className="text-gray-300 text-sm whitespace-pre-wrap break-words line-clamp-3 leading-relaxed">
                                         {note.content || 'No content'}
                                     </p>
-                                    <div className="mt-4 pt-4 border-t border-border">
-                                        <p className="text-xs text-text-secondary">
-                                            Updated {new Date(note.updatedAt).toLocaleDateString('en-US', {
-                                            month: 'short',
-                                            day: 'numeric',
-                                            year: 'numeric',
-                                        })}
-                                        </p>
+                                    <div className="mt-4 pt-4 border-t border-gray-700/50">
+                                        <div className="flex items-center gap-2 text-xs text-gray-400">
+                                            <UpdatedTimeLogo/>
+                                            <span>
+                                                Updated {new Date(note.updatedAt).toLocaleDateString('en-GB', {
+                                                month: 'short',
+                                                day: 'numeric',
+                                                year: 'numeric',
+                                            })}
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                                 <div
-                                    className="bg-primary/50 px-4 py-3 flex items-center justify-end gap-2 border-t border-border">
+                                    className="bg-gray-900/40 px-4 py-3 flex items-center justify-end gap-2 border-t border-gray-700/50">
                                     <button
                                         onClick={() => toggleFav(note)}
-                                        className={`p-2 rounded-lg transition-colors ${
+                                        className={`p-2 rounded-lg transition-all duration-200 ${
                                             note.isFavorite
-                                                ? 'text-warning hover:text-yellow-600'
-                                                : 'text-text-secondary hover:text-warning'
+                                                ? 'text-yellow-400 hover:text-yellow-300 hover:bg-yellow-500/10 hover:scale-110'
+                                                : 'text-gray-400 hover:text-yellow-400 hover:bg-yellow-500/10'
                                         }`}
                                         title={note.isFavorite ? 'Remove from favorites' : 'Add to favorites'}
                                     >
@@ -226,7 +249,7 @@ export default function FolderDetailPage() {
                                     </button>
                                     <button
                                         onClick={() => openEditModal(note)}
-                                        className="p-2 text-text-secondary hover:text-accent rounded-lg transition-colors"
+                                        className="p-2 text-gray-400 hover:text-cyan-400 hover:bg-cyan-500/10 rounded-lg transition-all duration-200"
                                         title="Edit note"
                                     >
                                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -236,7 +259,7 @@ export default function FolderDetailPage() {
                                     </button>
                                     <button
                                         onClick={() => remove(note.id)}
-                                        className="p-2 text-text-secondary hover:text-danger rounded-lg transition-colors"
+                                        className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all duration-200"
                                         title="Delete note"
                                     >
                                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -251,6 +274,7 @@ export default function FolderDetailPage() {
                 )}
             </div>
 
+            {/* Edit Modal */}
             <Modal isOpen={isModalOpen} onClose={closeEditModal} title="Edit Note">
                 <form onSubmit={saveEdit} className="space-y-4">
                     <Input
@@ -261,12 +285,12 @@ export default function FolderDetailPage() {
                         autoFocus
                     />
                     <div>
-                        <label className="block text-sm font-medium text-text-secondary mb-1">Content</label>
+                        <label className="block text-sm font-medium text-gray-300 mb-2">Content</label>
                         <textarea
                             value={editContent}
                             onChange={(e) => setEditContent(e.target.value)}
                             rows={6}
-                            className="w-full px-4 py-3 bg-primary border border-border rounded-lg focus:ring-2 focus:ring-accent focus:border-accent outline-none transition resize-none text-text-primary"
+                            className="w-full px-4 py-3 bg-gray-900/60 border border-gray-600/50 rounded-xl focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 outline-none transition resize-none text-white placeholder-gray-500"
                         />
                     </div>
                     <div className="flex justify-end gap-3 pt-4">

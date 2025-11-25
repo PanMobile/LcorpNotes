@@ -26,19 +26,19 @@ public class Note {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content = "";
 
-    @Column(name = "isFavorite", nullable = false)
+    @Column(name = "is_favorite", nullable = false)
     private Boolean isFavorite = false;
 
     @CreationTimestamp
-    @Column(name = "createdAt", nullable = false, updatable = false)
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(name = "updatedAt", nullable = false)
+    @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ownerId", nullable = false)
+    @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
 
     @ManyToOne(fetch = FetchType.LAZY)

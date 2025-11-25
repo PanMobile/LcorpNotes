@@ -1,5 +1,6 @@
 package com.lcorp.notes.config;
 
+import com.lcorp.notes.security.FirebaseAuthenticationFilter;
 import com.lcorp.notes.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,9 +23,12 @@ import java.util.List;
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final FirebaseAuthenticationFilter firebaseAuthenticationFilter;
 
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,
+                          FirebaseAuthenticationFilter firebaseAuthenticationFilter) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.firebaseAuthenticationFilter = firebaseAuthenticationFilter;
     }
 
     @Bean
@@ -37,6 +41,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**", "/api/health").permitAll()
                         .anyRequest().authenticated()
                 )
+                .addFilterBefore(firebaseAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
