@@ -7,13 +7,15 @@ import Input from "../components/ui/Input.tsx";
 import Button from "../components/ui/Button.tsx";
 import {EmptyNavigationBar} from "../components/layout/EmptyNavigationBar.tsx";
 import {SocialMediasFooter} from "../components/layout/SocialMediasFooter.tsx";
-import {GoogleLogo} from "../components/logos/GoogleLogo.tsx";
-import {ErrorLogo} from "../components/logos/ErrorLogo.tsx";
-import {NoteLogo} from "../components/logos/NoteLogo.tsx";
+import {GoogleLogo} from "../components/logos/authPage/GoogleLogo.tsx";
+import {ErrorLogo} from "../components/logos/authPage/ErrorLogo.tsx";
 
 export default function AuthPage() {
+    //Auth "state"
     const navigate = useNavigate();
     const {login} = useAuth();
+
+    //States
     const [mode, setMode] = useState<'login' | 'register'>('login');
 
     const [name, setName] = useState('');
@@ -24,6 +26,7 @@ export default function AuthPage() {
     const [loading, setLoading] = useState(false);
     const [googleLoading, setGoogleLoading] = useState(false);
 
+    //Usual auth
     const submit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
@@ -52,11 +55,13 @@ export default function AuthPage() {
         }
     };
 
+    //Google OAuth
     const handleGoogleLogin = async () => {
         setError('');
         setGoogleLoading(true);
 
         try {
+            //Google sign-in popup here
             const result = await signInWithPopup(auth, googleProvider);
 
             const idToken = await result.user.getIdToken();
@@ -101,25 +106,19 @@ export default function AuthPage() {
 
             <EmptyNavigationBar/>
 
-            {/* Main Card */}
             <div className="min-h-screen flex items-center justify-center px-4 py-12 relative z-10">
                 <div className="max-w-md w-full">
-
-                    {/* Brand Section */}
                     <div className="text-center mb-8">
                         <div
-                            className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl mb-4 shadow-lg shadow-indigo-500/50">
-                            <NoteLogo/>
+                            className="inline-flex items-center">
+                            <h1 className="text-6xl font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                                LCorpNotes
+                            </h1>
                         </div>
-                        <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                            LCorpNotes
-                        </h1>
                     </div>
 
-                    {/* Auth Card */}
                     <div
                         className="bg-gradient-to-br from-gray-800/80 to-gray-900/80 backdrop-blur-xl rounded-2xl shadow-2xl p-8 space-y-6 border border-gray-700/50">
-                        {/* Header */}
                         <div className="text-center">
                             <h2 className="text-3xl font-bold text-white mb-2">
                                 {mode === 'login' ? "Welcome Back!" : "Create Account"}
@@ -131,7 +130,6 @@ export default function AuthPage() {
                             </p>
                         </div>
 
-                        {/* Form */}
                         <form onSubmit={submit} className="space-y-5">
                             <Input
                                 id="email"
@@ -141,8 +139,7 @@ export default function AuthPage() {
                                 type="email"
                                 placeholder="AngelicaMyWaifu@gmail.com"
                                 required
-                                className="bg-gray-900/60 border-gray-600/50 text-white placeholder-gray-500 focus:border-indigo-500 focus:ring-indigo-500/50"
-                            />
+                                className="bg-gray-900/60 border-gray-600/50 text-white placeholder-gray-500 focus:border-indigo-500 focus:ring-indigo-500/50"/>
 
                             {mode === 'register' && (
                                 <Input
@@ -153,8 +150,7 @@ export default function AuthPage() {
                                     type="text"
                                     placeholder="Roland"
                                     required
-                                    className="bg-gray-900/60 border-gray-600/50 text-white placeholder-gray-500 focus:border-indigo-500 focus:ring-indigo-500/50"
-                                />
+                                    className="bg-gray-900/60 border-gray-600/50 text-white placeholder-gray-500 focus:border-indigo-500 focus:ring-indigo-500/50"/>
                             )}
 
                             <Input
@@ -163,10 +159,9 @@ export default function AuthPage() {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 type="password"
-                                placeholder="••••••••"
+                                placeholder="Angel228"
                                 required
-                                className="bg-gray-900/60 border-gray-600/50 text-white placeholder-gray-500 focus:border-indigo-500 focus:ring-indigo-500/50"
-                            />
+                                className="bg-gray-900/60 border-gray-600/50 text-white placeholder-gray-500 focus:border-indigo-500 focus:ring-indigo-500/50"/>
 
                             <Button
                                 type="submit"
@@ -177,7 +172,6 @@ export default function AuthPage() {
                             </Button>
                         </form>
 
-                        {/* Error Message */}
                         {error && (
                             <div
                                 className="flex items-center gap-2 p-3 bg-red-900/40 border border-red-500/50 rounded-xl text-red-300 text-sm backdrop-blur-sm">
@@ -196,7 +190,6 @@ export default function AuthPage() {
                             </div>
                         </div>
 
-                        {/* Google Sign In Button */}
                         <button
                             onClick={handleGoogleLogin}
                             disabled={googleLoading || loading}
@@ -205,12 +198,11 @@ export default function AuthPage() {
                             {googleLoading ? "Signing in..." : "Continue with Google"}
                         </button>
 
-                        {/* Toggle Mode */}
                         <div className="text-center pt-4 border-t border-gray-700/50">
                             <span className="text-gray-400">
                                 {mode === 'login' ? "Don't have an account?" : "Already have an account?"}
                             </span>
-                            {' '}
+                            {"   "}
                             <button
                                 className="text-indigo-400 font-semibold hover:text-indigo-300 focus:outline-none transition"
                                 onClick={() => setMode(mode === 'login' ? 'register' : 'login')}>
@@ -218,10 +210,8 @@ export default function AuthPage() {
                             </button>
                         </div>
                     </div>
-
-                    {/* Security Note */}
                     <p className="mt-6 text-center text-sm text-gray-500">
-                        🔒 Your data is NOT encrypted and NOT secure
+                        😭 I hope I'll never do web-development ever again
                     </p>
                 </div>
             </div>

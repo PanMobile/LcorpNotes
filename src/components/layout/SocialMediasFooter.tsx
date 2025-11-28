@@ -18,7 +18,7 @@ export function SocialMediasFooter() {
                     <div>
                         <FooterBrand
                             href="https://library-of-ruina.fandom.com/wiki/Lobotomy_Corporation"
-                            src="src/components/logos/LobotomyLogo.svg"
+                            src="src/components/logos/authPage/LobotomyLogo.svg"
                             alt="Lobo logo"
                             name="LCorpNotes is a (not) unique fullstack website 😍!"
                         />

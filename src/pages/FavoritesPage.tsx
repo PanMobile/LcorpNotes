@@ -1,22 +1,26 @@
 import {useEffect, useState} from 'react';
 import {apiFetch} from '../auth/AuthContext';
 import type {Note} from "../models/types.ts";
-import {FavoriteStarLogo} from "../components/logos/FavoriteStarLogo.tsx";
-import {FavoriteRemoveStarLogo} from "../components/logos/FavoriteRemoveStarLogo.tsx";
-import {UpdatedTimeLogo} from "../components/logos/UpdatedTimeLogo.tsx";
-import {FavoriteFolderLogo} from "../components/logos/FavoriteFolderLogo.tsx";
+import {FavoriteStarLogo} from "../components/logos/favoritesPage/FavoriteStarLogo.tsx";
+import {FavoriteRemoveStarLogo} from "../components/logos/favoritesPage/FavoriteRemoveStarLogo.tsx";
+import {UpdatedTimeLogo} from "../components/logos/shared/UpdatedTimeLogo.tsx";
+import {FavoriteFolderLogo} from "../components/logos/favoritesPage/FavoriteFolderLogo.tsx";
 import {useNavigate} from "react-router-dom";
-import {ViewNoteArrowLogo} from "../components/logos/ViewNoteArrowLogo.tsx";
+import {ViewNoteArrowLogo} from "../components/logos/favoritesPage/ViewNoteArrowLogo.tsx";
 
 
 export default function FavoritesPage() {
+    //Navigate function
     const navigate = useNavigate();
+
+    //States
+    const [folders, setFolders] = useState<{ id: number; name: string }[]>([]);
     const [notes, setNotes] = useState<Note[]>([]);
 
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(true);
 
-    const load = async () => {
+    const loadFavNotes = async () => {
         setLoading(true);
 
         try {
@@ -31,10 +35,24 @@ export default function FavoritesPage() {
         }
     };
 
+    const loadFolders = async () => {
+        try {
+            const allFolders = await apiFetch<{ id: number; name: string }[]>('/folders');
+            setFolders(allFolders);
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            //@ts-expect-error
+        } catch (error: Error) {
+            console.error('Error fetching folders:', error.message);
+        }
+    };
+
+
     useEffect(() => {
-        load();
+        loadFavNotes();
+        loadFolders();
     }, []);
 
+    //Showing only favorite notes
     const toggleFavorite = async (noteId: number) => {
         try {
             await apiFetch(`/notes/${noteId}/favorite`, {method: 'POST'});
@@ -61,22 +79,19 @@ export default function FavoritesPage() {
     return (
         <div className="min-h-screen bg-gray-900 py-8 px-4 sm:px-6 lg:px-8">
             <div className="max-w-7xl mx-auto">
-                {/* Header Section */}
                 <div className="mb-8">
                     <h2 className="text-4xl font-bold bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-400 bg-clip-text text-transparent">
                         Favorite Notes
                     </h2>
-                    <p className="mt-3 text-lg text-gray-300">Your starred notes in one place</p>
+                    <p className="mt-3 text-lg text-gray-300">Your starred notes in one place (this page)</p>
                 </div>
 
-                {/* Error Message */}
                 {error && (
                     <div className="mb-6 p-4 bg-red-900/40 border border-red-500/50 rounded-xl backdrop-blur-sm">
                         <p className="text-red-300 text-sm font-medium">{error}</p>
                     </div>
                 )}
 
-                {/* Empty State */}
                 {notes.length === 0 ? (
                     <div
                         className="bg-gradient-to-br from-gray-800/40 to-gray-900/40 backdrop-blur-sm rounded-2xl shadow-xl p-16 text-center border border-gray-700/50">
@@ -89,7 +104,6 @@ export default function FavoritesPage() {
                         <p className="text-gray-400 text-lg">Star notes to see them here</p>
                     </div>
                 ) : (
-                    /* Notes Grid */
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {notes.map((note) => (
                             <div
@@ -127,7 +141,9 @@ export default function FavoritesPage() {
                                     <div className="flex items-center justify-between">
                                         <span className="text-xs font-medium text-indigo-400 flex items-center gap-1">
                                             <FavoriteFolderLogo/>
-                                            {note.folderId ? `Folder #${note.folderId}` : "No folder"}
+                                            {note.folderId
+                                                ? folders.find(f => f.id === note.folderId)?.name || `Folder #${note.folderId}`
+                                                : "No folder"}
                                         </span>
                                         <button
                                             className="text-xs text-indigo-400 hover:text-indigo-300 font-medium hover:gap-2 transition-all duration-200 flex items-center gap-1 group/btn"

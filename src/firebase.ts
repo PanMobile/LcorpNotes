@@ -1,8 +1,8 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 
-// Your web app's Firebase configuration
-// Get these from Firebase Console > Project Settings > General
+// Firebase configuration
+// Firebase Console -> Project Settings -> General
 const firebaseConfig = {
     apiKey: "AIzaSyA7U2Qet8qY3eMMxmliW7_Tc65O9Eq8XpY",
     authDomain: "lcorpnotes.firebaseapp.com",
