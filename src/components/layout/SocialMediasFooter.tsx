@@ -20,8 +20,7 @@ export function SocialMediasFooter() {
                             href="https://library-of-ruina.fandom.com/wiki/Lobotomy_Corporation"
                             src="src/components/logos/authPage/LobotomyLogo.svg"
                             alt="Lobo logo"
-                            name="LCorpNotes is a (not) unique fullstack website 😍!"
-                        />
+                            name="LCorpNotes is a (not) unique fullstack website 😍!"/>
                     </div>
                     <div className="grid grid-cols-2 gap-8 sm:mt-4 sm:grid-cols-3 sm:gap-6">
                         <div>

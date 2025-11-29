@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Link} from 'react-router-dom';
 import {apiFetch} from '../context/AuthContext';
+import {useTheme} from '../context/ThemeContext';
 import type {Folder} from "../models/types.ts";
 import Layout from '../components/layout/Layout';
 import Button from '../components/ui/Button';
@@ -14,23 +15,19 @@ import {FolderLogo} from "../components/logos/foldersPage/FolderLogo.tsx";
 import {FolderCardLogo} from "../components/logos/foldersPage/FolderCardLogo.tsx";
 
 export default function FoldersPage() {
+    const {isDarkMode} = useTheme();
     const [folders, setFolders] = useState<Folder[]>([]);
-
     const [name, setName] = useState('');
     const [editName, setEditName] = useState('');
-
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(true);
-
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingFolder, setEditingFolder] = useState<Folder | null>(null);
 
     const loadFolders = async () => {
         setLoading(true);
-
         try {
             const data = await apiFetch<Folder[]>('/folders');
-            //TODO fix later
             const arr = Array.isArray(data) ? data : (data && Array.isArray((data as any).folders) ? (data as any).folders : []);
             setFolders(arr.map((f: Folder) => ({id: f.id, name: f.name, createdAt: f.createdAt ?? f.createdAt})));
         } catch (e) {
@@ -50,21 +47,17 @@ export default function FoldersPage() {
             await apiFetch('/folders', {method: 'POST', body: JSON.stringify({name})});
             setName('');
             await loadFolders();
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            //@ts-expect-error
-        } catch (error: Error) {
-            setError(error.message);
+        } catch (error) {
+            setError((error as Error).message);
         }
     };
 
-    //Another window layer on top to edit
     const openEditModal = (folder: Folder) => {
         setEditingFolder(folder);
         setEditName(folder.name);
         setIsModalOpen(true);
     };
 
-    //Closing another window layer on top to edit
     const closeEditModal = () => {
         setIsModalOpen(false);
         setEditingFolder(null);
@@ -74,7 +67,6 @@ export default function FoldersPage() {
     const saveEdit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!editingFolder) return;
-
         try {
             await apiFetch(`/folders/${editingFolder.id}`, {
                 method: 'PUT',
@@ -89,14 +81,11 @@ export default function FoldersPage() {
 
     const deleteFolder = async (id: number) => {
         if (!confirm('Delete this folder and all its notes?')) return;
-
         try {
             await apiFetch(`/folders/${id}`, {method: 'DELETE'});
             await loadFolders();
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            //@ts-expect-error
-        } catch (error: Error) {
-            setError(error.message);
+        } catch (error) {
+            setError((error as Error).message);
         }
     };
 
@@ -106,7 +95,7 @@ export default function FoldersPage() {
                 <div className="flex items-center justify-center min-h-[60vh]">
                     <div className="flex flex-col items-center gap-3">
                         <Spinner size="lg"/>
-                        <p className="text-gray-400">Loading folders...</p>
+                        <p className={isDarkMode ? 'text-gray-400' : 'text-gray-600'}>Loading folders...</p>
                     </div>
                 </div>
             </Layout>
@@ -120,11 +109,17 @@ export default function FoldersPage() {
                     <h2 className="text-4xl font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
                         My Folders
                     </h2>
-                    <p className="mt-3 text-lg text-gray-300">Organize your notes into beautiful folders</p>
+                    <p className={`mt-3 text-lg ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                        Organize your notes into beautiful folders
+                    </p>
                 </div>
 
                 <form onSubmit={createFolder}
-                      className="bg-gradient-to-br from-indigo-900/40 to-purple-900/40 backdrop-blur-sm rounded-2xl shadow-xl p-6 mb-8 border border-indigo-500/30">
+                      className={`rounded-2xl shadow-xl p-6 mb-8 border transition-colors ${
+                          isDarkMode
+                              ? 'bg-gradient-to-br from-indigo-900/40 to-purple-900/40 backdrop-blur-sm border-indigo-500/30'
+                              : 'bg-white border-indigo-200'
+                      }`}>
                     <div className="flex gap-4">
                         <div className="flex-1">
                             <Input
@@ -132,7 +127,8 @@ export default function FoldersPage() {
                                 onChange={(e) => setName(e.target.value)}
                                 placeholder="Enter folder name..."
                                 required
-                                className="bg-gray-800/50 border-indigo-500/50 text-white placeholder-gray-400 focus:border-indigo-400 focus:ring-indigo-400/50"/>
+                                className={isDarkMode ? 'bg-gray-800/50 border-indigo-500/50 text-white placeholder-gray-400 focus:border-indigo-400 focus:ring-indigo-400/50' : 'bg-gray-50 border-indigo-300 text-gray-900 placeholder-gray-500'}
+                            />
                         </div>
                         <Button
                             type="submit"
@@ -145,42 +141,59 @@ export default function FoldersPage() {
                 </form>
 
                 {error && (
-                    <div className="mb-6 p-4 bg-red-900/40 border border-red-500/50 rounded-xl backdrop-blur-sm">
-                        <p className="text-red-300 text-sm font-medium">{error}</p>
+                    <div className={`mb-6 p-4 rounded-xl backdrop-blur-sm border ${
+                        isDarkMode ? 'bg-red-900/40 border-red-500/50' : 'bg-red-50 border-red-200'
+                    }`}>
+                        <p className={`text-sm font-medium ${isDarkMode ? 'text-red-300' : 'text-red-700'}`}>{error}</p>
                     </div>
                 )}
 
                 {folders.length === 0 ? (
-                    <div
-                        className="bg-gradient-to-br from-gray-800/40 to-gray-900/40 backdrop-blur-sm rounded-2xl shadow-xl p-16 text-center border border-gray-700/50">
+                    <div className={`rounded-2xl shadow-xl p-16 text-center border transition-colors ${
+                        isDarkMode
+                            ? 'bg-gradient-to-br from-gray-800/40 to-gray-900/40 backdrop-blur-sm border-gray-700/50'
+                            : 'bg-white border-gray-200'
+                    }`}>
                         <div className="flex justify-center mb-6">
                             <div className="p-6 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 rounded-full">
                                 <FolderLogo/>
                             </div>
                         </div>
-                        <h3 className="text-2xl font-bold text-white mb-3">No folders yet</h3>
-                        <p className="text-gray-400 text-lg">Create your first folder to get started organizing your
-                            notes</p>
+                        <h3 className={`text-2xl font-bold mb-3 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                            No folders yet
+                        </h3>
+                        <p className={`text-lg ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                            Create your first folder to get started organizing your notes
+                        </p>
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                         {folders.map((folder) => (
                             <div
                                 key={folder.id}
-                                className="group bg-gradient-to-br from-gray-800/60 to-gray-900/60 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-700/50 hover:border-indigo-500/50 transform hover:-translate-y-1">
+                                className={`group rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border transform hover:-translate-y-1 ${
+                                    isDarkMode
+                                        ? 'bg-gradient-to-br from-gray-800/60 to-gray-900/60 backdrop-blur-sm border-gray-700/50 hover:border-indigo-500/50'
+                                        : 'bg-white border-gray-200 hover:border-indigo-300'
+                                }`}>
                                 <Link
                                     to={`/folders/${folder.id}`}
-                                    className="block p-6 hover:bg-gradient-to-br hover:from-indigo-900/20 hover:to-purple-900/20 transition-all duration-200">
+                                    className={`block p-6 transition-all duration-200 ${
+                                        isDarkMode ? 'hover:bg-gradient-to-br hover:from-indigo-900/20 hover:to-purple-900/20' : 'hover:bg-indigo-50/50'
+                                    }`}>
                                     <div className="flex items-start gap-4">
-                                        <div
-                                            className="flex-shrink-0 p-3 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 rounded-xl group-hover:from-indigo-500/30 group-hover:to-purple-500/30 transition-all duration-200">
+                                        <div className="flex-shrink-0 p-3 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 rounded-xl group-hover:from-indigo-500/30 group-hover:to-purple-500/30 transition-all duration-200">
                                             <FolderCardLogo/>
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <h3 className="text-lg font-bold text-white break-words group-hover:text-indigo-300 transition-colors mb-2">
+                                            <h3 className={`text-lg font-bold break-words group-hover:text-indigo-300 transition-colors mb-2 ${
+                                                isDarkMode ? 'text-white' : 'text-gray-900'
+                                            }`}>
                                                 {folder.name}
                                             </h3>
-                                            <p className="text-xs text-gray-400 group-hover:text-gray-300 transition-colors">
+                                            <p className={`text-xs transition-colors ${
+                                                isDarkMode ? 'text-gray-400 group-hover:text-gray-300' : 'text-gray-600 group-hover:text-gray-700'
+                                            }`}>
                                                 Created {new Date(folder.createdAt).toLocaleDateString('en-GB', {
                                                 month: 'short',
                                                 day: 'numeric',
@@ -190,17 +203,22 @@ export default function FoldersPage() {
                                         </div>
                                     </div>
                                 </Link>
-                                <div
-                                    className="bg-gray-900/40 px-4 py-3 flex items-center justify-end gap-2 border-t border-gray-700/50">
+                                <div className={`px-4 py-3 flex items-center justify-end gap-2 border-t ${
+                                    isDarkMode ? 'bg-gray-900/40 border-gray-700/50' : 'bg-gray-50 border-gray-200'
+                                }`}>
                                     <button
                                         onClick={() => openEditModal(folder)}
-                                        className="p-2 text-gray-400 hover:text-indigo-400 hover:bg-indigo-500/10 rounded-lg transition-all duration-200"
+                                        className={`p-2 rounded-lg transition-all duration-200 ${
+                                            isDarkMode ? 'text-gray-400 hover:text-indigo-400 hover:bg-indigo-500/10' : 'text-gray-600 hover:text-indigo-600 hover:bg-indigo-100'
+                                        }`}
                                         title="Edit folder">
                                         <EditLogo/>
                                     </button>
                                     <button
                                         onClick={() => deleteFolder(folder.id)}
-                                        className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all duration-200"
+                                        className={`p-2 rounded-lg transition-all duration-200 ${
+                                            isDarkMode ? 'text-gray-400 hover:text-red-400 hover:bg-red-500/10' : 'text-gray-600 hover:text-red-600 hover:bg-red-100'
+                                        }`}
                                         title="Delete folder">
                                         <DeleteLogo/>
                                     </button>
