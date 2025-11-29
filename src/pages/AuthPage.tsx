@@ -7,7 +7,7 @@ import {auth, googleProvider} from '../firebase';
 import Input from "../components/ui/Input.tsx";
 import Button from "../components/ui/Button.tsx";
 import {StandardNavigationBar} from "../components/layout/StandardNavigationBar.tsx";
-import {SocialMediasFooter} from "../components/layout/SocialMediasFooter.tsx";
+import {SocialMediaFooter} from "../components/layout/SocialMediaFooter.tsx";
 import {GoogleLogo} from "../components/logos/authPage/GoogleLogo.tsx";
 import {ErrorLogo} from "../components/logos/authPage/ErrorLogo.tsx";
 
@@ -250,7 +250,7 @@ export default function AuthPage() {
                     </p>
                 </div>
             </div>
-            <SocialMediasFooter/>
+            <SocialMediaFooter/>
         </div>
     );
 }

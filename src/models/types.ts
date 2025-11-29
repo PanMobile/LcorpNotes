@@ -1,27 +1,27 @@
 import React from "react";
 
-//Python User model
+
 export interface User {
     id: number;
     email: string;
     name: string;
 }
 
-//Python Folder model
+
 export interface Folder {
     id: number;
     name: string;
-    createdAt: string; // ISO datetime string
+    createdAt: string;
 }
 
-//Python Note model
+
 export interface Note {
     id: number;
     title: string;
     content: string;
     isFavorite: boolean;
     folderId: number | null;
-    updatedAt: string; // ISO datetime string
+    updatedAt: string;
 }
 
 export interface Profile {
@@ -30,7 +30,7 @@ export interface Profile {
     name: string;
 }
 
-// Context types
+
 export interface AuthContextType {
     user: User | null;
     token: string;
@@ -38,7 +38,7 @@ export interface AuthContextType {
     logout: () => void;
 }
 
-//Props
+
 export interface PrivateRouteProps {
     children: React.ReactNode;
 }

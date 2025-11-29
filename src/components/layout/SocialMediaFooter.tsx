@@ -1,7 +1,7 @@
 import {useTheme} from '../../context/ThemeContext';
 import {BsGithub, BsTelegram, BsWhatsapp} from "react-icons/bs";
 
-export function SocialMediasFooter() {
+export function SocialMediaFooter() {
     const {isDarkMode} = useTheme();
 
     return (
@@ -17,12 +17,9 @@ export function SocialMediasFooter() {
                             target="_blank"
                             rel="noopener noreferrer">
                             <span className={`text-xl font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent group-hover:from-purple-600 group-hover:to-pink-700 transition-all`}>
-                                LCorpNotes
+                                A (not) unique fullstack website ❤️!
                             </span>
                         </a>
-                        <p className={`mt-2 text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                            A (not) unique fullstack website 😍!
-                        </p>
                     </div>
                     <div className="grid grid-cols-2 gap-8 sm:mt-0 sm:grid-cols-3 sm:gap-6">
                         <div>
@@ -82,7 +79,7 @@ export function SocialMediasFooter() {
                             <ul className="space-y-2">
                                 <li>
                                     <a
-                                        href="https://www.python.org/"
+                                        href="https://www.java.com/en/"
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className={`text-sm transition-colors ${
@@ -90,12 +87,12 @@ export function SocialMediasFooter() {
                                                 ? 'text-gray-400 hover:text-indigo-400'
                                                 : 'text-gray-600 hover:text-indigo-600'
                                         }`}>
-                                        Python
+                                        Java
                                     </a>
                                 </li>
                                 <li>
                                     <a
-                                        href="https://flask.palletsprojects.com/en/stable/"
+                                        href="https://spring.io/"
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className={`text-sm transition-colors ${
@@ -103,7 +100,7 @@ export function SocialMediasFooter() {
                                                 ? 'text-gray-400 hover:text-indigo-400'
                                                 : 'text-gray-600 hover:text-indigo-600'
                                         }`}>
-                                        Flask
+                                        Spring Boot
                                     </a>
                                 </li>
                                 <li>
