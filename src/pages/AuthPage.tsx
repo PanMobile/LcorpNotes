@@ -6,7 +6,7 @@ import {signInWithPopup} from 'firebase/auth';
 import {auth, googleProvider} from '../firebase';
 import Input from "../components/ui/Input.tsx";
 import Button from "../components/ui/Button.tsx";
-import {EmptyNavigationBar} from "../components/layout/EmptyNavigationBar.tsx";
+import {StandardNavigationBar} from "../components/layout/StandardNavigationBar.tsx";
 import {SocialMediasFooter} from "../components/layout/SocialMediasFooter.tsx";
 import {GoogleLogo} from "../components/logos/authPage/GoogleLogo.tsx";
 import {ErrorLogo} from "../components/logos/authPage/ErrorLogo.tsx";
@@ -105,7 +105,7 @@ export default function AuthPage() {
                 </div>
             </div>
 
-            <EmptyNavigationBar/>
+            <StandardNavigationBar/>
 
             <div className="flex items-center justify-center px-4 py-12 relative z-10" style={{minHeight: 'calc(100vh - 4rem)'}}>
                 <div className="max-w-md w-full">
