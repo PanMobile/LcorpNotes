@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {useParams, Link} from 'react-router-dom';
-import {apiFetch} from '../auth/AuthContext';
+import {apiFetch} from '../context/AuthContext';
 import type {Note} from "../models/types.ts";
 import Layout from '../components/layout/Layout';
 import Button from '../components/ui/Button';
@@ -128,12 +128,14 @@ export default function FolderDetailPage() {
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center min-h-[60vh]">
-                <div className="flex flex-col items-center gap-3">
-                    <Spinner size="lg"/>
-                    <p className="text-gray-400">Loading notes...</p>
+            <Layout>
+                <div className="flex items-center justify-center min-h-[60vh]">
+                    <div className="flex flex-col items-center gap-3">
+                        <Spinner size="lg"/>
+                        <p className="text-gray-400">Loading notes...</p>
+                    </div>
                 </div>
-            </div>
+            </Layout>
         );
     }
 

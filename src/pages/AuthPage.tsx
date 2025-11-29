@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
-import {useAuth, apiFetch} from '../auth/AuthContext';
+import {useAuth, apiFetch} from '../context/AuthContext';
 import {signInWithPopup} from 'firebase/auth';
 import {auth, googleProvider} from '../firebase';
 import Input from "../components/ui/Input.tsx";

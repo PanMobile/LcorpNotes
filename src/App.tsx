@@ -1,7 +1,7 @@
 import {Link, Navigate, Route, Routes, useLocation} from 'react-router-dom';
 import './App.css';
 
-import {apiFetch, AuthProvider, useAuth} from './auth/AuthContext';
+import {apiFetch, AuthProvider, useAuth} from './context/AuthContext';
 import AuthPage from './pages/AuthPage';
 import FoldersPage from './pages/FoldersPage';
 import FolderDetailPage from './pages/FolderDetailPage.tsx';
@@ -21,9 +21,31 @@ function PrivateRoute({children}: PrivateRouteProps) {
 }
 
 function Shell({children}: ShellProps) {
+    //User data
     const {token, user, logout, login} = useAuth();
     const location = useLocation();
+
+    //States
     const [currentUser, setCurrentUser] = useState(user);
+    const [isDarkMode, setIsDarkMode] = useState(() => {
+        // Check localStorage or default to dark mode
+        const saved = localStorage.getItem('theme');
+        return saved ? saved === 'dark' : true;
+    });
+
+    useEffect(() => {
+        if (isDarkMode) {
+            document.documentElement.classList.add('dark');
+            localStorage.setItem('theme', 'dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+            localStorage.setItem('theme', 'light');
+        }
+    }, [isDarkMode]);
+
+    const toggleTheme = () => {
+        setIsDarkMode(!isDarkMode);
+    };
 
     // Fetch updated user data when profile page is visited
     useEffect(() => {
@@ -52,16 +74,20 @@ function Shell({children}: ShellProps) {
         }
     }, [location.pathname]);
 
-    const isActive = (path: string) => location.pathname === path || location.pathname.startsWith(path);
+    const isActive = (path: string) =>
+        location.pathname === path || location.pathname.startsWith(path);
 
     return (
-        <div className="min-h-screen bg-gray-900">
+        <div className={`min-h-screen transition-colors duration-300 ${isDarkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
             {/* Navigation */}
-            <nav
-                className="bg-gradient-to-r from-gray-800 to-gray-900 shadow-lg border-b border-gray-700/50 backdrop-blur-sm sticky top-0 z-50">
+            <nav className={`shadow-lg border-b backdrop-blur-sm sticky top-0 z-50 transition-colors duration-300 ${
+                isDarkMode
+                    ? 'bg-gradient-to-r from-gray-800 to-gray-900 border-gray-700/50'
+                    : 'bg-white border-gray-200'
+            }`}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex items-center justify-between h-16">
-                        {/* Logo/Brand */}
+
                         <div className="flex items-center gap-8">
                             <Link
                                 to="/folders"
@@ -72,14 +98,15 @@ function Shell({children}: ShellProps) {
                                 </span>
                             </Link>
 
-                            {/* Nav Links */}
                             <div className="hidden md:flex items-center gap-2">
                                 <Link
                                     to="/folders"
                                     className={`px-4 py-2 rounded-xl font-medium transition-all ${
-                                        isActive('/foldersPage')
+                                        isActive('/folders')
                                             ? 'bg-indigo-500/20 text-indigo-300 shadow-lg shadow-indigo-500/20'
-                                            : 'text-gray-300 hover:text-indigo-300 hover:bg-indigo-500/10'
+                                            : isDarkMode
+                                                ? 'text-gray-300 hover:text-indigo-300 hover:bg-indigo-500/10'
+                                                : 'text-gray-700 hover:text-indigo-600 hover:bg-indigo-50'
                                     }`}>
                                     <div className="flex items-center gap-2">
                                         <FoldersIcon/>
@@ -89,9 +116,11 @@ function Shell({children}: ShellProps) {
                                 <Link
                                     to="/favorites"
                                     className={`px-4 py-2 rounded-xl font-medium transition-all ${
-                                        isActive('/favoritesPage')
+                                        isActive('/favorites')
                                             ? 'bg-yellow-500/20 text-yellow-300 shadow-lg shadow-yellow-500/20'
-                                            : 'text-gray-300 hover:text-yellow-300 hover:bg-yellow-500/10'
+                                            : isDarkMode
+                                                ? 'text-gray-300 hover:text-yellow-300 hover:bg-yellow-500/10'
+                                                : 'text-gray-700 hover:text-yellow-600 hover:bg-yellow-50'
                                     }`}>
                                     <div className="flex items-center gap-2">
                                         <FavoritesIcon/>
@@ -103,7 +132,9 @@ function Shell({children}: ShellProps) {
                                     className={`px-4 py-2 rounded-xl font-medium transition-all ${
                                         isActive('/profile')
                                             ? 'bg-purple-500/20 text-purple-300 shadow-lg shadow-purple-500/20'
-                                            : 'text-gray-300 hover:text-purple-300 hover:bg-purple-500/10'
+                                            : isDarkMode
+                                                ? 'text-gray-300 hover:text-purple-300 hover:bg-purple-500/10'
+                                                : 'text-gray-700 hover:text-purple-600 hover:bg-purple-50'
                                     }`}>
                                     <div className="flex items-center gap-2">
                                         <ProfileIcon/>
@@ -113,8 +144,25 @@ function Shell({children}: ShellProps) {
                             </div>
                         </div>
 
-                        {/* User section */}
                         <div className="flex items-center gap-4">
+                            <button
+                                onClick={toggleTheme}
+                                className="p-2 text-gray-300 hover:text-indigo-300 hover:bg-indigo-500/10 rounded-xl transition-all group"
+                                title={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+                            >
+                                {isDarkMode ? (
+                                    // Sun icon for light mode
+                                    <svg className="w-5 h-5 group-hover:rotate-180 transition-transform duration-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+                                    </svg>
+                                ) : (
+                                    // Moon icon for dark mode
+                                    <svg className="w-5 h-5 group-hover:rotate-12 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                                    </svg>
+                                )}
+                            </button>
+
                             {(currentUser || user) && (
                                 <div
                                     className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-gray-800/60 rounded-lg border border-gray-700/50">
