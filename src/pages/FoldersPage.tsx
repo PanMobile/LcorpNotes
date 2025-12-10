@@ -74,8 +74,8 @@ export default function FoldersPage() {
             });
             closeEditModal();
             await loadFolders();
-        } catch (e) {
-            setError(e instanceof Error ? e.message : 'Failed to update folder');
+        } catch (error) {
+            setError(error instanceof Error ? error.message : 'Failed to update folder');
         }
     };
 

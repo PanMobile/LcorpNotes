@@ -14,10 +14,13 @@ import {WarningLogo} from "../components/logos/profilePage/WarningLogo.tsx";
 import Layout from "../components/layout/Layout.tsx";
 
 export default function ProfilePage() {
+    //тема
     const {isDarkMode} = useTheme();
+    //Пользователь стафф
     const navigate = useNavigate();
     const {user, logout} = useAuth();
 
+    //стейты
     const [profile, setProfile] = useState<Profile | null>(user);
     const [name, setName] = useState(user?.name || '');
     const [isUpdatingName, setIsUpdatingName] = useState(false);
@@ -29,6 +32,7 @@ export default function ProfilePage() {
     const [error, setError] = useState('');
     const [message, setMessage] = useState('');
 
+    //загрузка данных пользователя
     const loadProfile = async () => {
         try {
             const data = await apiFetch<Profile>('/profile');
@@ -39,10 +43,12 @@ export default function ProfilePage() {
         }
     };
 
+    //Загружаем данные профиля
     useEffect(() => {
         loadProfile();
     }, []);
 
+    //Смена имени
     const updateName = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsUpdatingName(true);
@@ -57,6 +63,7 @@ export default function ProfilePage() {
         }
     };
 
+    //Смена пароля
     const changePassword = async (e: React.FormEvent) => {
         e.preventDefault();
         if (newPassword !== confirmPassword) {
@@ -97,6 +104,7 @@ export default function ProfilePage() {
         }
     };
 
+    //функция для выхода
     const handleLogout = () => {
         logout();
         navigate('/auth');

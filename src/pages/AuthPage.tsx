@@ -12,10 +12,14 @@ import {GoogleLogo} from "../components/logos/authPage/GoogleLogo.tsx";
 import {ErrorLogo} from "../components/logos/authPage/ErrorLogo.tsx";
 
 export default function AuthPage() {
+    //Тема
     const {isDarkMode} = useTheme();
+    // навигация
     const navigate = useNavigate();
+    //Пользователь stuff для логина
     const {login} = useAuth();
 
+    //Стейты
     const [mode, setMode] = useState<'login' | 'register'>('login');
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -24,6 +28,7 @@ export default function AuthPage() {
     const [loading, setLoading] = useState(false);
     const [googleLoading, setGoogleLoading] = useState(false);
 
+    // регистрация/логин (в зависимости от стейта)
     const submit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
@@ -43,15 +48,14 @@ export default function AuthPage() {
 
             login(res.accessToken, res.user);
             navigate('/folders');
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-expect-error
-        } catch (error: Error) {
-            setError(error.message);
+        } catch (error) {
+            setError((error as Error).message);
         } finally {
             setLoading(false);
         }
     };
 
+    //специальный логин через гугл, ибо тут используется firebase вместо JWT
     const handleGoogleLogin = async () => {
         setError('');
         setGoogleLoading(true);
@@ -69,10 +73,8 @@ export default function AuthPage() {
 
             login(idToken, res.user);
             navigate('/folders');
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-expect-error
-        } catch (error: Error) {
-            if (error.code === 'auth/popup-closed-by-user') {
+        } catch (error) {
+            if ((error as Error).cause === 'auth/popup-closed-by-user') {
                 setError("Sign-in cancelled");
             } else {
                 setError((error as Error).message);
@@ -82,6 +84,7 @@ export default function AuthPage() {
         }
     };
 
+    //Разметка
     return (
         <div className={`min-h-screen relative overflow-hidden transition-colors duration-300 ${
             isDarkMode ? 'bg-gray-900' : 'bg-gray-50'

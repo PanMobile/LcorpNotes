@@ -17,10 +17,13 @@ import {DeleteLogo} from "../components/logos/shared/DeleteLogo.tsx";
 import {IsFavoriteLogo} from "../components/logos/folderDetailPage/IsFavoriteLogo.tsx";
 
 export default function FolderDetailPage() {
+    //Тема
     const {isDarkMode} = useTheme();
+    //Параметр айдишки
     const {id} = useParams<{ id: string }>();
     const folderId = Number(id);
 
+    //Стейты
     const [notes, setNotes] = useState<Note[]>([]);
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
@@ -31,6 +34,7 @@ export default function FolderDetailPage() {
     const [editTitle, setEditTitle] = useState('');
     const [editContent, setEditContent] = useState('');
 
+    //Главная функция загрузки папки
     const loadFolder = useCallback(async () => {
         setLoading(true);
         try {
@@ -47,6 +51,7 @@ export default function FolderDetailPage() {
         loadFolder();
     }, [folderId, loadFolder]);
 
+    //Функция созадния заметки
     const createNote = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
@@ -62,6 +67,7 @@ export default function FolderDetailPage() {
         }
     };
 
+    //Доп окно поверху
     const openEditModal = (note: Note) => {
         setEditingNote(note);
         setEditTitle(note.title);
@@ -69,6 +75,7 @@ export default function FolderDetailPage() {
         setIsModalOpen(true);
     };
 
+    //Доп окно поверху тоже, но закрыть
     const closeEditModal = () => {
         setIsModalOpen(false);
         setEditingNote(null);
@@ -76,6 +83,7 @@ export default function FolderDetailPage() {
         setEditContent('');
     };
 
+    //Функция сохранения редактирования
     const saveEdit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!editingNote) return;
@@ -91,6 +99,7 @@ export default function FolderDetailPage() {
         }
     };
 
+    //Функция удаления заметки
     const removeNote = async (id: number) => {
         if (!confirm('Delete this note?')) return;
         try {
@@ -101,6 +110,7 @@ export default function FolderDetailPage() {
         }
     };
 
+    //Переключалка любимого
     const toggleFav = async (note: Note) => {
         try {
             await apiFetch(`/notes/${note.id}/favorite`, {method: 'POST'});
@@ -110,6 +120,7 @@ export default function FolderDetailPage() {
         }
     };
 
+    //Разметка если загрузка
     if (loading) {
         return (
             <Layout>
@@ -123,6 +134,7 @@ export default function FolderDetailPage() {
         );
     }
 
+    //Разметка
     return (
         <Layout>
             <div className="max-w-7xl mx-auto">

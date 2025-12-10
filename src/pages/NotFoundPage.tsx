@@ -3,6 +3,7 @@ import {Link} from 'react-router-dom';
 import {HomeLogo} from "../components/logos/notFoundPage/HomeLogo.tsx";
 import {SadLogo} from "../components/logos/notFoundPage/SadLogo.tsx";
 
+//Обычная странциа не найдено
 const NotFoundPage: React.FC = () => {
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-gray-900 text-center px-4 relative overflow-hidden">

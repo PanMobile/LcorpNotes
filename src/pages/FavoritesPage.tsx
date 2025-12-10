@@ -11,14 +11,18 @@ import {ViewNoteArrowLogo} from "../components/logos/favoritesPage/ViewNoteArrow
 import Layout from "../components/layout/Layout.tsx";
 
 export default function FavoritesPage() {
+    //Тема
     const {isDarkMode} = useTheme();
+    //Навигация
     const navigate = useNavigate();
 
+    //Стейты
     const [folders, setFolders] = useState<{ id: number; name: string }[]>([]);
     const [notes, setNotes] = useState<Note[]>([]);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(true);
 
+    //Главная функция загрузки любимых заметок
     const loadFavNotes = async () => {
         setLoading(true);
         try {
@@ -31,6 +35,7 @@ export default function FavoritesPage() {
         }
     };
 
+    //Загрузка папок
     const loadFolders = async () => {
         try {
             const allFolders = await apiFetch<{ id: number; name: string }[]>('/folders');
@@ -45,6 +50,7 @@ export default function FavoritesPage() {
         loadFolders();
     }, []);
 
+    //Переключаем любимые
     const toggleFavorite = async (noteId: number) => {
         try {
             await apiFetch(`/notes/${noteId}/favorite`, {method: 'POST'});
@@ -54,6 +60,7 @@ export default function FavoritesPage() {
         }
     };
 
+    //Разметка при загрузке
     if (loading) {
         return (
             <Layout>
@@ -69,6 +76,7 @@ export default function FavoritesPage() {
         );
     }
 
+    //Разметка основная
     return (
         <Layout>
             <div className="max-w-7xl mx-auto">

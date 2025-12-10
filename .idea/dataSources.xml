@@ -16,11 +16,11 @@
         </library>
       </libraries>
     </data-source>
-    <data-source source="LOCAL" name="lcorporation" uuid="3825d6bb-ade6-4c37-9558-eb8d61614881">
+    <data-source source="LOCAL" name="lcorpnotestest" uuid="b8b85852-dc86-4da5-b8bc-c22880651def">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/notes-backend/lcorporation.db</jdbc-url>
+      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/notes-backend/lcorpnotestest.sqlite3</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
       <libraries>
         <library>
