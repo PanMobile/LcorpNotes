@@ -13,13 +13,14 @@
 
 [Возможности](#-возможности) • [Технологии](#-технологический-стек) • [Установка](#-установка) • [Использование](#-использование) • [API](#-api-документация)
 
+P.S: Веб-разбработка это жесть...
 </div>
 
 ---
 
 ## Возможности
 
-### 📂 Управление заметками (По сути - CRUD)
+### 📂 Управление заметками
 -  **Создание заметок** - Создание заметок с заголовком и содержимым
 -  **Папки** - Создание заметок внутри папок для удобства
 -  **Избранное** - Отметка важных заметок звездочкой для быстрого доступа
@@ -61,35 +62,6 @@
 - Auth: JWT (JSON Web Tokens)
 - SDK: Firebase Admin SDK (Верификация Firebase токенов)
 
-
-### 📊 База данных
-```sql
-SQLite 3.44.1.0 - Схема базы данных
-
-users
-  - id (PK, AUTO_INCREMENT)
-  - email (UNIQUE, NOT NULL)
-  - name (NOT NULL)
-  - password_hash (NOT NULL)
-  - created_at (TIMESTAMP)
-
-folders
-  - id (PK, AUTO_INCREMENT)
-  - name (NOT NULL)
-  - owner_id (FK → users.id, CASCADE DELETE)
-  - created_at (TIMESTAMP)
-
-notes
-  - id (PK, AUTO_INCREMENT)
-  - title (NOT NULL)
-  - content (TEXT)
-  - is_favorite (BOOLEAN)
-  - folder_id (FK → folders.id, SET NULL)
-  - owner_id (FK → users.id, CASCADE DELETE)
-  - created_at (TIMESTAMP)
-  - updated_at (TIMESTAMP)
-```
-
 ---
 
 ## 📦 Установка
@@ -103,7 +75,7 @@ Maven 3.8+
 
 # Frontend
 Node.js 18+
-npm или yarn
+npm
 ```
 
 ### 1. Клонирование репозитория
@@ -118,6 +90,9 @@ cd lcorpnotes
 ```bash
 # Настройку проекта делать не нужно
 # Внутри репозитория все необходимые модули и зависимости
+# ...
+# Да, я глупо сделал и влил абсолютно все в репозиторий
+# С другой стороны - запустить проект даже легче!
 ```
 
 ### 3. Запуска бекенда
@@ -125,10 +100,6 @@ cd lcorpnotes
 ```bash
 cd notes-backend
 mvn spring-boot:run
-
-# Или сборка JAR
-mvn clean package
-java -jar target/notes-backend-1.0.0.jar
 ```
 
 Backend будет доступен на `http://localhost:5000`
@@ -141,309 +112,6 @@ npm run dev
 ```
 
 Frontend будет доступен на `http://localhost:5173`
----
-
-## 📡 API Документация
-
-### Базовый URL
-```
-http://localhost:5000/api
-```
-
-### Аутентификация
-
-#### Регистрация
-```http
-POST /auth/register
-Content-Type: application/json
-
-{
-  "email": "AngelicaMyWaifu@gmail.com",
-  "name": "Roland",
-  "password": "PasswordTest17"
-}
-
-Response: 201 Created
-{
-  "message": "Registered"
-}
-```
-
-#### Вход (Email/Password)
-```http
-POST /auth/login
-Content-Type: application/json
-
-{
-  "email": "AngelicaMyWaifu@gmail.com",
-  "password": "PasswordTest17"
-}
-
-Response: 200 OK
-{
-  "accessToken": "eyJhbGciOiJIUzI1NiIs...",
-  "user": {
-    "id": 1,
-    "email": "AngelicaMyWaifu@gmail.com",
-    "name": "Roland"
-  }
-}
-```
-
-#### Вход через Firebase (Google)
-```http
-POST /auth/firebase-login
-Content-Type: application/json
-
-{
-  "idToken": "firebase_id_token_here"
-}
-
-Response: 200 OK
-{
-  "message": "Firebase authentication successful",
-  "token": "firebase_id_token_here",
-  "user": {
-    "id": 1,
-    "email": "AngelicaMyWaifu@gmail.com",
-    "name": "Roland"
-  }
-}
-```
-
-### Папки
-
-**Все запросы требуют заголовок:** `Authorization: Bearer {token}`
-
-#### Получить все папки
-```http
-GET /folders
-
-Response: 200 OK
-[
-  {
-    "id": 1,
-    "name": "Work",
-    "createdAt": "2025-01-15T10:30:00"
-  }
-]
-```
-
-#### Создать папку
-```http
-POST /folders
-Content-Type: application/json
-
-{
-  "name": "Personal"
-}
-
-Response: 201 Created
-{
-  "id": 2,
-  "name": "Personal",
-  "createdAt": "2025-01-15T11:00:00"
-}
-```
-
-#### Переименовать папку
-```http
-PUT /folders/{folderId}
-Content-Type: application/json
-
-{
-  "name": "Work Projects"
-}
-
-Response: 200 OK
-{
-  "message": "Updated"
-}
-```
-
-#### Удалить папку
-```http
-DELETE /folders/{folderId}
-
-Response: 200 OK
-{
-  "message": "Deleted"
-}
-```
-
-### Заметки
-
-#### Получить заметки
-```http
-GET /notes
-GET /notes?folderId=1  // Заметки конкретной папки
-
-Response: 200 OK
-[
-  {
-    "id": 1,
-    "title": "Meeting Notes",
-    "content": "Discussion points...",
-    "isFavorite": false,
-    "folderId": 1,
-    "updatedAt": "2025-01-15T14:30:00"
-  }
-]
-```
-
-#### Создать заметку
-```http
-POST /notes
-Content-Type: application/json
-
-{
-  "title": "New Note",
-  "content": "Content here",
-  "folderId": 1  // optional
-}
-
-Response: 201 Created
-{
-  "id": 2,
-  "title": "New Note",
-  "content": "Content here",
-  "isFavorite": false,
-  "folderId": 1,
-  "updatedAt": "2025-01-15T15:00:00"
-}
-```
-
-#### Обновить заметку
-```http
-PUT /notes/{noteId}
-Content-Type: application/json
-
-{
-  "title": "Updated Title",
-  "content": "Updated content",
-  "folderId": null  // переместить в "без папки"
-}
-
-Response: 200 OK
-{
-  "id": 2,
-  "title": "Updated Title",
-  "content": "Updated content",
-  "isFavorite": false,
-  "folderId": null,
-  "updatedAt": "2025-01-15T15:30:00"
-}
-```
-
-#### Удалить заметку
-```http
-DELETE /notes/{noteId}
-
-Response: 200 OK
-{
-  "message": "Deleted"
-}
-```
-
-#### Переключить избранное
-```http
-POST /notes/{noteId}/favorite
-
-Response: 200 OK
-{
-  "id": 2,
-  "isFavorite": true
-}
-```
-
-### Профиль
-
-#### Получить профиль
-```http
-GET /profile
-
-Response: 200 OK
-{
-  "id": 1,
-  "email": "user@example.com",
-  "name": "John Doe"
-}
-```
-
-#### Обновить имя
-```http
-PUT /profile
-Content-Type: application/json
-
-{
-  "name": "Jane Doe"
-}
-
-Response: 200 OK
-{
-  "message": "Name changed success!"
-}
-```
-
-#### Сменить пароль
-```http
-POST /profile/change-password
-Content-Type: application/json
-
-{
-  "currentPassword": "oldpassword",
-  "newPassword": "newpassword"
-}
-
-Response: 200 OK
-{
-  "message": "Password change GREAT success!"
-}
-```
-
-#### Удалить аккаунт
-```http
-DELETE /profile
-
-Response: 200 OK
-{
-  "message": "Account deleted :("
-}
-```
-
----
-
-## 🎨 Структура проекта
-
-```
-lcorpnotes/
-├── backend-java/                      # Java Spring Boot Backend
-│   ├── src/main/java/com/lcorp/notes/
-│   │   ├── NotesApplication.java     
-│   │   ├── config
-│   │   ├── controller
-│   │   ├── dto                     
-│   │   ├── model
-│   │   ├── repository
-│   │   └── security
-│   ├── src/main/resources
-│   ├── pom.xml                        # Maven зависимости
-│   └── lcorpnotes.sqlite3            # База данных SQLite
-│
-├── frontend/                          # React TypeScript Frontend
-│   ├── src/
-│   │   ├── auth/
-│   │   ├── components/               # Переиспользуемые компоненты
-│   │   ├── pages/
-│   │   ├── models/
-│   │   ├── firebase.ts               # Firebase конфигурация
-│   │   ├── App.tsx                   # Главный компонент
-│   │   └── main.tsx                  # Entry point
-│   │
-└── README.md                          # Этот файл
-```
-
----
 
 ## 🔒 Безопасность
 
@@ -463,7 +131,7 @@ lcorpnotes/
 
 <div align="center">
 
-**Сделано без ❤️ PanMobile'ом (Mobile stack лучше)**
+**Сделано с 😭 PanMobile'ом (Mobile stack лучше)**
 
 [⬆ Наверх](#-lcorpnotes)
 
